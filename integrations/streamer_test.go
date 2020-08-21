@@ -3510,7 +3510,7 @@ stream
 
 	tmInit := func(tm *kapacitor.TaskMaster) {
 		c := httppost.Config{}
-		c.URL = ts.URL
+		c.URLTemplate = ts.URL
 		c.Endpoint = "test"
 		sl, _ := httppost.NewService(httppost.Configs{c}, diagService.NewHTTPPostHandler())
 		tm.HTTPPostService = sl
@@ -3589,7 +3589,7 @@ stream
 
 	tmInit := func(tm *kapacitor.TaskMaster) {
 		c := httppost.Config{}
-		c.URL = ts.URL
+		c.URLTemplate = ts.URL
 		c.Endpoint = "test"
 		c.RowTemplate = `{{.Name}} host={{index .Tags "host"}} type={{index .Tags "type"}}{{range .Values}} {{index . "time"}} {{index . "value"}}{{end}}`
 		sl, _ := httppost.NewService(httppost.Configs{c}, diagService.NewHTTPPostHandler())
@@ -3693,7 +3693,7 @@ stream
 
 	tmInit := func(tm *kapacitor.TaskMaster) {
 		c := httppost.Config{}
-		c.URL = ts.URL
+		c.URLTemplate = ts.URL
 		c.Endpoint = "test"
 		sl, _ := httppost.NewService(httppost.Configs{c}, diagService.NewHTTPPostHandler())
 		tm.HTTPPostService = sl
@@ -9799,7 +9799,7 @@ stream
 `
 	tmInit := func(tm *kapacitor.TaskMaster) {
 		c := httppost.Config{}
-		c.URL = ts.URL
+		c.URLTemplate = ts.URL
 		c.Endpoint = "test"
 		c.Headers = headers
 		sl, _ := httppost.NewService(httppost.Configs{c}, diagService.NewHTTPPostHandler())

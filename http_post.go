@@ -40,7 +40,9 @@ func newHTTPPostNode(et *ExecutingTask, n *pipeline.HTTPPostNode, d NodeDiagnost
 
 	// Should only ever be 0 or 1 from validation of n
 	if len(n.URLs) == 1 {
-		e := httppost.NewEndpoint(n.URLs[0], nil, httppost.BasicAuth{}, nil, nil)
+		temp, _ := httppost.GetTemplate(n.URLs[0], "")
+
+		e := httppost.NewEndpoint(temp, nil, httppost.BasicAuth{}, nil, nil)
 		hn.endpoint = e
 	}
 
@@ -167,8 +169,9 @@ func (n *HTTPPostNode) postRow(row *models.Row) (*http.Response, error) {
 	body := new(bytes.Buffer)
 
 	var contentType string
+	var mr *mappedRow
 	if n.endpoint.RowTemplate() != nil {
-		mr := newMappedRow(row)
+		mr = newMappedRow(row)
 		err := n.endpoint.RowTemplate().Execute(body, mr)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to execute template")
@@ -182,8 +185,7 @@ func (n *HTTPPostNode) postRow(row *models.Row) (*http.Response, error) {
 		}
 		contentType = "application/json"
 	}
-
-	req, err := n.endpoint.NewHTTPRequest(body)
+	req, err := n.endpoint.NewHTTPRequest(body, mr)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to marshal row data json")
 	}

@@ -408,8 +408,15 @@ func newAlertNode(et *ExecutingTask, n *pipeline.AlertNode, d NodeDiagnostic) (a
 	}
 
 	for _, p := range n.HTTPPostHandlers {
+		urlt, err := httppost.GetTemplate(p.URL, "")
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to create httpPost handler")
+		}
+		if p.Endpoint == "" && urlt == nil {
+			return nil, errors.New("Either URL or endpoint must be non-empty")
+		}
 		c := httppost.HandlerConfig{
-			URL:             p.URL,
+			URL:             urlt,
 			Endpoint:        p.Endpoint,
 			Headers:         p.Headers,
 			CaptureResponse: p.CaptureResponseFlag,
